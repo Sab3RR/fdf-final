@@ -10,7 +10,7 @@ void	normalization(t_var *var)
 	if (var->cols > var->rows)
 		var->scale = WIDTH / 2 / var->cols;
 	else
-		var->scale = HEIGHT / 2 / var->cols;
+		var->scale = HEIGHT / 2 / var->rows;
 	map_x = (var->scale * (var->cols - 1));
 	var->n_x = (1920 - map_x)/2;
 	map_y = (var->scale * (var->rows - 1));
@@ -29,7 +29,7 @@ void	line(t_var *var)
 	error[0] = var->dx + var->dy;
 	while (1)
 	{
-		img_put_pixel(var, var->x, var->y);
+		put_pixel(var, var->y, var->x);
 		if (var->x == var->x1 && var->y == var->y1)
 			break ;
 		error[1] = 2 * error[0];
@@ -48,27 +48,36 @@ void	line(t_var *var)
 
 void	render_core(t_var *var, int y, int x)
 {
+//	double s_y;
+//	double s_x;
+//
+//	s_y = (double)(var->rows - 1)/2;
+//	s_x = (double)(var->cols - 1)/2;
+//
+//	var->x0 = var->n_x;
+//	var->y0 = var->n_y + (int)(s_y * var->scale);
+//	var->x1 = var->n_x + (var->cols - 1) * var->scale;
+//	var->y1 = var->n_y + (int)(s_y * var->scale);
+//	var->x = var->x0;
+//	var->y = var->y0;
+	line(var);
 	if (x + 1 < var->cols)
 	{
-		var->z0 = var->map[y][x]->s_z + var->scale + var->alt;
-		var->z1 = var->map[y][x + 1]->s_z +var->scale + var->alt;
-		set_coords(fdf, k, n);
-		set_coords(fdf, k, n + 1);
-		fdf->x_curr = fdf->x0;
-		fdf->y_curr = fdf->y0;
-		fdf->color_curr = fdf->color0;
-		draw_line(fdf);
+		set_coords(var, y, x);
+		set_coords(var, y, x + 1);
+		var->x = var->x0;
+		var->y = var->y0;
+		var->color = var->color0;
+		line(var);
 	}
-	if (x + 1 < fdf->rows)
+	if (y + 1 < var->rows)
 	{
-		var->z0 = var->map[y][x]->s_z + var->scale + var->alt;
-		var->z1 = var->map[y + 1][x]->s_z +var->scale + var->alt;
-		set_coords(fdf, k, n);
-		set_coords(fdf, k + 1, n);
-		fdf->x_curr = fdf->x0;
-		fdf->y_curr = fdf->y0;
-		fdf->color_curr = fdf->color0;
-		draw_line(fdf);
+		set_coords(var, y, x);
+		set_coords(var, y + 1, x);
+		var->x = var->x0;
+		var->y = var->y0;
+		var->color = var->color0;
+		line(var);
 	}
 }
 
@@ -79,12 +88,13 @@ void	rot(t_var *var, int y, int x, int yy)
 
 	while (++y < var->rows)
 	{
+		x = -1;
 		while (++x < var->cols)
 		{
-			var->map[y][x]->x = (var->rows - 1) * var->scale / 2 - ((var->cols - 1)
+			var->map[y][x]->x = (var->cols - 1) * var->scale / 2 - ((var->cols - 1)
 					* var->scale - x * var->scale);
 			var->map[y][x]->y = (var->rows - 1) * var->scale / 2 - y * var->scale;
-			var->map[y][x]->z = var->map[y][x]->s_z * 5;
+			var->map[y][x]->z = var->map[y][x]->s_z * var->alt;
 			xx = var->map[y][x]->x;
 			yy = var->map[y][x]->y;
 			zz = var->map[y][x]->z;
@@ -106,7 +116,7 @@ void	render(t_var *var)
 	int x;
 	int y;
 
-	ft_bzero(var->img_addr, WIDTH * HEIGHT * var->bpp / 8);
+	ft_bzero(var->img_addr, (size_t)(WIDTH * HEIGHT * var->bpp / 8));
 	normalization(var);
 	rot(var, -1, -1, 0);
 	y = -1;
@@ -118,6 +128,7 @@ void	render(t_var *var)
 		render_core(var, y, x);
 		}
 	}
+	mlx_put_image_to_window(var->mlx_ptr, var->win_ptr, var->img_ptr, 0, 0);
 
 }
 

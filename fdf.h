@@ -53,7 +53,13 @@ typedef struct	s_var
 	int			z0;
 	int 		z1;
 	int 		alt;
+	int 		color;
+	int 		color0;
+	int 		shift_x;
+	int 		shift_y;
 }				t_var;
 
 void	render(t_var *var);
+void	set_coords(t_var *var, int y, int x);
+void	put_pixel(t_var *var, int y, int x);
 #endif //FDF_FDF_H

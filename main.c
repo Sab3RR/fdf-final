@@ -69,6 +69,7 @@ void	start(t_var *var)
 	var->fd = open(var->name, O_RDONLY);
 	create_map(var);
 	render(var);
+	mlx_loop(var->mlx_ptr);
 }
 
 int 	main(int ac, char **av)
@@ -88,6 +89,10 @@ int 	main(int ac, char **av)
 		free(var);
 		return (0);
 	}
+//	var->rad_x = 1.059931;
+//	var->rad_y = 1.5708;
+//	var->rad_z = 0.785398;
+	var->alt = 5;
 	start(var);
 
 
