@@ -52,14 +52,29 @@ typedef struct	s_var
 	int 		sy;
 	int			z0;
 	int 		z1;
-	int 		alt;
+	double 		alt;
 	int 		color;
 	int 		color0;
+	int 		color1;
 	int 		shift_x;
 	int 		shift_y;
+	int 		max_z;
+	int 		min_z;
+	int 		colordx;
+	int 		last_x;
+	int 		last_y;
+	int 		button;
+	int 		help_button;
 }				t_var;
 
 void	render(t_var *var);
 void	set_coords(t_var *var, int y, int x);
 void	put_pixel(t_var *var, int y, int x);
+void	normalization(t_var *var);
+int		move_mouse(int x, int y, t_var *var);
+int		mouse_key(int button, int x, int y, t_var *var);
+int		key_realise(int button, int x, int y, t_var *var);
+int		deal_key(int key, t_var *var);
+int		ft_close(void *param);
+void	help_menu(t_var *var);
 #endif //FDF_FDF_H

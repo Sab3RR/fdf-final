@@ -11,21 +11,23 @@ void	create_map(t_var *var)
 	char 	**numer;
 
 	var->map = (t_map***)ft_memalloc(sizeof(t_map**) * var->rows);
-	y = 0;
+	y = -1;
 	while (get_next_line(var->fd, &line) > 0)
 	{
-		var->map[y] = (t_map**)ft_memalloc(sizeof(t_map*) * var->cols);
+		var->map[++y] = (t_map**)ft_memalloc(sizeof(t_map*) * var->cols);
 		numer = ft_strsplit(line, ' ');
-		x = 0;
-		while (x < var->cols)
+		x = -1;
+		while (++x < var->cols)
 		{
+			if (ft_atoi(numer[x]) > var->max_z)
+				var->max_z = ft_atoi(numer[x]);
+			if (ft_atoi(numer[x]) < var->min_z)
+				var->min_z = ft_atoi(numer[x]);
 			var->map[y][x] = (t_map*)ft_memalloc(sizeof(t_map));
 			var->map[y][x]->s_z = ft_atoi(numer[x]);
-			x++;
 		}
 		free(line);
 		ft_memdel_arr((void***)&numer);
-		y++;
 	}
 	free(line);
 }
@@ -64,11 +66,21 @@ void	start(t_var *var)
 	var->img_ptr = mlx_new_image(var->mlx_ptr, WIDTH, HEIGHT);
 	var->bpp = 32;
 	var->img_addr = mlx_get_data_addr(var->img_ptr, &var->bpp, &var->size_line, &var->endian);
+	var->max_z = 1;
 	count_map(var);
 	close(var->fd);
 	var->fd = open(var->name, O_RDONLY);
 	create_map(var);
+	if (var->cols > var->rows)
+		var->scale = WIDTH / 2 / var->cols;
+	else
+		var->scale = HEIGHT / 2 / var->rows;
 	render(var);
+	mlx_hook(var->win_ptr, 4, (1L << 17), mouse_key, (void*)var);
+	mlx_hook(var->win_ptr, 5, (1L << 17), key_realise, (void*)var);
+	mlx_hook(var->win_ptr, 6, (1L << 17), move_mouse, (void*)var);
+	mlx_hook(var->win_ptr, 3, (1L << 17), deal_key, (void*)var);
+	mlx_hook(var->win_ptr, 17, (1L << 17), ft_close, (void*)var);
 	mlx_loop(var->mlx_ptr);
 }
 
@@ -82,17 +94,17 @@ int 	main(int ac, char **av)
 	if (!(var = (t_var *) ft_memalloc(sizeof(t_var))))
 		return (0);
 //	var->name = av[1];
-	var->name = "42.fdf";
+	var->name = "test_maps/pyra.fdf";
 	if ((var->fd = open(var->name, O_RDONLY)) == -1)
 	{
 		ft_putstr("Invalid Filename\n");
 		free(var);
 		return (0);
 	}
-//	var->rad_x = 1.059931;
-//	var->rad_y = 1.5708;
-//	var->rad_z = 0.785398;
-	var->alt = 5;
+	var->rad_x = 0.959931;
+	var->rad_y = 0;
+	var->rad_z = 0.785398;
+	var->alt = 1;
 	start(var);
 
 

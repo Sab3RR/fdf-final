@@ -6,11 +6,6 @@ void	normalization(t_var *var)
 {
 	int map_x;
 	int map_y;
-
-	if (var->cols > var->rows)
-		var->scale = WIDTH / 2 / var->cols;
-	else
-		var->scale = HEIGHT / 2 / var->rows;
 	map_x = (var->scale * (var->cols - 1));
 	var->n_x = (1920 - map_x)/2;
 	map_y = (var->scale * (var->rows - 1));
@@ -48,19 +43,6 @@ void	line(t_var *var)
 
 void	render_core(t_var *var, int y, int x)
 {
-//	double s_y;
-//	double s_x;
-//
-//	s_y = (double)(var->rows - 1)/2;
-//	s_x = (double)(var->cols - 1)/2;
-//
-//	var->x0 = var->n_x;
-//	var->y0 = var->n_y + (int)(s_y * var->scale);
-//	var->x1 = var->n_x + (var->cols - 1) * var->scale;
-//	var->y1 = var->n_y + (int)(s_y * var->scale);
-//	var->x = var->x0;
-//	var->y = var->y0;
-	line(var);
 	if (x + 1 < var->cols)
 	{
 		set_coords(var, y, x);
@@ -94,7 +76,7 @@ void	rot(t_var *var, int y, int x, int yy)
 			var->map[y][x]->x = (var->cols - 1) * var->scale / 2 - ((var->cols - 1)
 					* var->scale - x * var->scale);
 			var->map[y][x]->y = (var->rows - 1) * var->scale / 2 - y * var->scale;
-			var->map[y][x]->z = var->map[y][x]->s_z * var->alt;
+			var->map[y][x]->z = (int)(var->map[y][x]->s_z * var->scale * var->alt);
 			xx = var->map[y][x]->x;
 			yy = var->map[y][x]->y;
 			zz = var->map[y][x]->z;
@@ -128,8 +110,9 @@ void	render(t_var *var)
 		render_core(var, y, x);
 		}
 	}
-	mlx_put_image_to_window(var->mlx_ptr, var->win_ptr, var->img_ptr, 0, 0);
 
+	mlx_put_image_to_window(var->mlx_ptr, var->win_ptr, var->img_ptr, 0, 0);
+	help_menu(var);
 }
 
 
