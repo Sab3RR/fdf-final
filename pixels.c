@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pixels.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsusol <vsusol@student.unit.ua>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/07 17:44:04 by vsusol            #+#    #+#             */
+/*   Updated: 2019/03/07 17:44:05 by vsusol           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
 double	percent(int start, int end, int curr)
@@ -29,22 +41,22 @@ void	get_color(t_var *var)
 	else
 		perc = percent(var->y0, var->y1, var->y);
 	red = get_light((var->color0 >> 16) & 0xFF,
-					(var->color1 >> 16) & 0xFF, perc);
+			(var->color1 >> 16) & 0xFF, perc);
 	green = get_light((var->color0 >> 8) & 0xFF,
-					  (var->color1 >> 8) & 0xFF, perc);
+			(var->color1 >> 8) & 0xFF, perc);
 	blue = get_light(var->color0 & 0xFF, var->color1 & 0xFF, perc);
 	var->color = (red << 16) | (green << 8) | blue;
 }
 
-
-void	set_coords(t_var *var, int y, int x) {
+void	set_coords(t_var *var, int y, int x)
+{
 	var->x0 = var->x1;
 	var->y0 = var->y1;
 	var->z0 = var->z1;
 	var->color0 = var->color1;
 	var->x1 = var->n_x + (var->cols - 1) * var->scale / 2 + var->map[y][x]->x;
 	var->y1 = var->n_y + (var->rows - 1) * var->scale / 2 - var->map[y][x]->y;
-	var->z1 =(int)(var->map[y][x]->s_z * var->alt);
+	var->z1 = (int)(var->map[y][x]->s_z * var->alt);
 	if (var->z1 > (var->alt * var->max_z * 0.8))
 		var->color1 = 0xFFFFFF;
 	else if (var->z1 > (var->alt * var->max_z / 3))
@@ -64,7 +76,7 @@ void	put_pixel(t_var *var, int y, int x)
 	int	color;
 
 	get_color(var);
-	color =	var->color + var->colordx;
+	color = var->color + var->colordx;
 	x = x + var->shift_x;
 	y = y + var->shift_y;
 	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)

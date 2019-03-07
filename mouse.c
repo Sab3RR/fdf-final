@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mouse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsusol <vsusol@student.unit.ua>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/07 17:43:49 by vsusol            #+#    #+#             */
+/*   Updated: 2019/03/07 17:43:52 by vsusol           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
 
 void	rot_y(t_var *var, int y)
@@ -36,8 +48,9 @@ void	rot_x(t_var *var, int x)
 
 int		move_mouse(int x, int y, t_var *var)
 {
-	int button = var->button;
+	int button;
 
+	button = var->button;
 	if (button == 1)
 	{
 		rot_y(var, y);

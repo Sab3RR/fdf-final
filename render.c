@@ -1,16 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   render.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsusol <vsusol@student.unit.ua>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/07 17:44:20 by vsusol            #+#    #+#             */
+/*   Updated: 2019/03/07 17:44:21 by vsusol           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
-
-
 
 void	normalization(t_var *var)
 {
 	int map_x;
 	int map_y;
-	map_x = (var->scale * (var->cols - 1));
-	var->n_x = (1920 - map_x)/2;
-	map_y = (var->scale * (var->rows - 1));
-	var->n_y = (1080 - map_y)/2;
 
+	map_x = (var->scale * (var->cols - 1));
+	var->n_x = (1920 - map_x) / 2;
+	map_y = (var->scale * (var->rows - 1));
+	var->n_y = (1080 - map_y) / 2;
 }
 
 void	line(t_var *var)
@@ -63,32 +73,14 @@ void	render_core(t_var *var, int y, int x)
 	}
 }
 
-void	rot(t_var *var, int y, int x, int yy)
+void	rot(t_var *var, int y, int x)
 {
-	int xx;
-	int zz;
-
 	while (++y < var->rows)
 	{
 		x = -1;
 		while (++x < var->cols)
 		{
-			var->map[y][x]->x = (var->cols - 1) * var->scale / 2 - ((var->cols - 1)
-					* var->scale - x * var->scale);
-			var->map[y][x]->y = (var->rows - 1) * var->scale / 2 - y * var->scale;
-			var->map[y][x]->z = (int)(var->map[y][x]->s_z * var->scale * var->alt);
-			xx = var->map[y][x]->x;
-			yy = var->map[y][x]->y;
-			zz = var->map[y][x]->z;
-			var->map[y][x]->y = (int)(yy * cos(var->rad_y) + zz * sin(var->rad_y));
-			var->map[y][x]->z = (int)(-(yy) * sin(var->rad_y) + zz * cos(var->rad_y));
-			yy = var->map[y][x]->y;
-			zz = var->map[y][x]->z;
-			var->map[y][x]->x = (int)(xx * cos(var->rad_x) + zz * sin(var->rad_x));
-			var->map[y][x]->z = (int)(-(xx) * sin(var->rad_x) + zz * cos(var->rad_x));
-			xx = var->map[y][x]->x;
-			var->map[y][x]->x = (int)(xx * cos(var->rad_z) + yy * sin(var->rad_z));
-			var->map[y][x]->y = (int)(-(xx) * sin(var->rad_z) + yy * cos(var->rad_z));
+			rotation(var, y, x, 0);
 		}
 	}
 }
@@ -100,19 +92,19 @@ void	render(t_var *var)
 
 	ft_bzero(var->img_addr, (size_t)(WIDTH * HEIGHT * var->bpp / 8));
 	normalization(var);
-	rot(var, -1, -1, 0);
+	rot(var, -1, -1);
 	y = -1;
 	while (++y < var->rows)
 	{
 		x = -1;
 		while (++x < var->cols)
 		{
-		render_core(var, y, x);
+			render_core(var, y, x);
 		}
 	}
-
 	mlx_put_image_to_window(var->mlx_ptr, var->win_ptr, var->img_ptr, 0, 0);
 	help_menu(var);
+	printf("rad_x %f\n",var->rad_x);
+	printf("rad_y %f\n", var->rad_y);
+	printf("rad_z %f\n", var->rad_z);
 }
-
-

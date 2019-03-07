@@ -15,9 +15,7 @@
 # include <string.h>
 # include <unistd.h>
 # include <stdlib.h>
-
 # define IS_SPACE(x) (x == ' '||x == '\n'||x == '\t')
-//# define abs(x) (x > 0 ? x : -x)
 # define BUFF_SIZE 1000
 
 void				ft_putchar(char c);

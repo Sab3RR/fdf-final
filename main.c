@@ -1,14 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vsusol <vsusol@student.unit.ua>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/07 17:43:25 by vsusol            #+#    #+#             */
+/*   Updated: 2019/03/07 17:43:27 by vsusol           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "fdf.h"
-
-
-
 
 void	create_map(t_var *var)
 {
-	int 	x;
+	int		x;
 	int		y;
-	char 	*line;
-	char 	**numer;
+	char	*line;
+	char	**numer;
 
 	var->map = (t_map***)ft_memalloc(sizeof(t_map**) * var->rows);
 	y = -1;
@@ -34,9 +43,9 @@ void	create_map(t_var *var)
 
 void	count_map(t_var *var)
 {
-	int 	n;
-	char 	*line;
-	char 	**numer;
+	int		n;
+	char	*line;
+	char	**numer;
 
 	var->rows = 0;
 	var->cols = -1;
@@ -59,13 +68,15 @@ void	count_map(t_var *var)
 	}
 	free(line);
 }
+
 void	start(t_var *var)
 {
 	var->mlx_ptr = mlx_init();
 	var->win_ptr = mlx_new_window(var->mlx_ptr, WIDTH, HEIGHT, "fdf 42");
 	var->img_ptr = mlx_new_image(var->mlx_ptr, WIDTH, HEIGHT);
 	var->bpp = 32;
-	var->img_addr = mlx_get_data_addr(var->img_ptr, &var->bpp, &var->size_line, &var->endian);
+	var->img_addr = mlx_get_data_addr(var->img_ptr,
+			&var->bpp, &var->size_line, &var->endian);
 	var->max_z = 1;
 	count_map(var);
 	close(var->fd);
@@ -84,17 +95,18 @@ void	start(t_var *var)
 	mlx_loop(var->mlx_ptr);
 }
 
-int 	main(int ac, char **av)
+int		main(int ac, char **av)
 {
 	t_var *var;
+
 //	if (ac != 2) {
 //		ft_putstr("Invalid Argument\n");
 //		return (0);
 //	}
-	if (!(var = (t_var *) ft_memalloc(sizeof(t_var))))
+	if (!(var = (t_var *)ft_memalloc(sizeof(t_var))))
 		return (0);
 //	var->name = av[1];
-	var->name = "test_maps/pyra.fdf";
+	var->name = "42.fdf";
 	if ((var->fd = open(var->name, O_RDONLY)) == -1)
 	{
 		ft_putstr("Invalid Filename\n");
@@ -106,7 +118,5 @@ int 	main(int ac, char **av)
 	var->rad_z = 0.785398;
 	var->alt = 1;
 	start(var);
-
-
 	return (0);
 }
